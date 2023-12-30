@@ -1,10 +1,11 @@
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import React, { useEffect } from 'react';
 import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
-import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
-
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import useAuth from '../hooks/useAuth'; // Import your custom useAuth hook
+import Login from './Login'
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
@@ -24,6 +25,8 @@ export default function RootLayout() {
     ...FontAwesome.font,
   });
 
+  const { isLoggedIn } = useAuth(); // Using the useAuth hook to check authentication
+
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
     if (error) throw error;
@@ -39,10 +42,10 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutNav />;
+  return isLoggedIn ? <AuthenticatedLayout /> : <Login />; // Conditionally render based on authentication
 }
 
-function RootLayoutNav() {
+function AuthenticatedLayout() {
   const colorScheme = useColorScheme();
 
   return (
